@@ -2,9 +2,10 @@ import os
 import logging
 import sys
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 import docker
+from fastapi.responses import JSONResponse
 import uvicorn
 
 docker_client = docker.from_env()
@@ -14,7 +15,18 @@ log = logging.getLogger(__name__)
 app = FastAPI()
 
 
-def get_active_containers():
+@app.middleware('http')
+async def check_token(req: Request, next):
+    if req.headers.get('Authorization') != AUTH_TOKEN:
+        return JSONResponse(status_code=401, content={
+            "message": "yout shall not pass"})
+
+    res = await next(req)
+    return res
+
+
+@app.get('/info')
+async def get_active_containers():
     containers = docker_client.containers.list()
     result = []
     for container in containers:
@@ -27,12 +39,7 @@ def get_active_containers():
             'ports': container.ports,
         })
 
-    return result
-
-
-@app.get('/info')
-async def containers_info():
-    return jsonable_encoder(get_active_containers())
+    return jsonable_encoder(result)
 
 
 def main():

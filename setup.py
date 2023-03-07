@@ -9,5 +9,5 @@ setup(
     packages=['app'],
     entry_points={
             'console_scripts': [
-                'sync = app.main:main']},
+                'insight_sync = app.main:main']},
 )

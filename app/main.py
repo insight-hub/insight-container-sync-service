@@ -81,7 +81,7 @@ async def deploy_new_container(
         log.info('Sucess')
         kill_old_container(container_name)
         docker_client.containers.run(
-            image=image_name, name=container_name, ports=ports)
+            image=image_name, name=container_name, ports=ports, detach=True)
 
         return {"message": f'{container_name} are God damn deployed'}
 

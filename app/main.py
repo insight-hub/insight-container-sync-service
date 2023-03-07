@@ -18,7 +18,6 @@ app = FastAPI()
 @app.middleware('http')
 async def check_token(req: Request, next):
     if req.headers.get('Authorization') != AUTH_TOKEN:
-        print(req.headers.get('Authorization'))
         return JSONResponse(status_code=401, content={
             "message": "yout shall not pass"})
 
@@ -84,8 +83,7 @@ async def deploy_new_container(
         docker_client.containers.run(
             image=image_name, name=container_name, ports=ports)
 
-        return JSONResponse({
-            "message": f'{container_name} are God damn deployed'})
+        return {"message": f'{container_name} are God damn deployed'}
 
     except Exception as e:
         log.error(f'Error while deploing container {container_name} {e}')

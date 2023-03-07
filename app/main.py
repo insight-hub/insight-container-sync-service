@@ -2,16 +2,20 @@ import os
 import logging
 import sys
 
+import uvicorn
+import docker
 from fastapi import Body, FastAPI, Request
 from fastapi.encoders import jsonable_encoder
-import docker
 from fastapi.responses import JSONResponse
-import uvicorn
+from logging.config import dictConfig
+from .logger import LogConfig
+
 
 docker_client = docker.from_env()
 AUTH_TOKEN = os.getenv('CI_TOKEN', None)
 
-log = logging.getLogger(__name__)
+dictConfig(LogConfig().dict())
+log = logging.getLogger("sync")
 app = FastAPI()
 
 
@@ -60,7 +64,7 @@ def kill_old_container(container_name: str):
         return False
 
     finally:
-        docker_client.containers.prune()
+        log.info(docker_client.containers.prune())
 
     log.info(f'Container deleted. container_name = {container_name}')
     return True

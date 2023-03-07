@@ -9,5 +9,5 @@ setup(
     packages=['app'],
     entry_points={
             'console_scripts': [
-                'ci_app = app.main:main']},
+                'sync = app.main:main']},
 )

@@ -1,6 +1,7 @@
 import os
 import logging
 import sys
+from pydantic import BaseModel
 
 import uvicorn
 import docker
@@ -70,6 +71,10 @@ def kill_old_container(container_name: str):
     return True
 
 
+def get_ports_interface(ports: dict):
+    return {key: ('127.0.0.1', value) for key, value in ports.items()}
+
+
 @app.post('/update')
 async def deploy_new_container(
         owner: str = Body(),
@@ -85,7 +90,11 @@ async def deploy_new_container(
         log.info('Sucess')
         kill_old_container(container_name)
         docker_client.containers.run(
-            image=image_name, name=container_name, ports=ports, detach=True)
+            image=image_name,
+            name=container_name,
+            ports=get_ports_interface(ports),
+            detach=True
+        )
 
         return {"message": f'{container_name} are God damn deployed'}
 

@@ -66,6 +66,7 @@ def kill_old_container(container_name: str):
 
     finally:
         log.info(docker_client.containers.prune())
+        log.info(docker_client.images.prune())
 
     log.info(f'Container deleted. container_name = {container_name}')
     return True

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 import uvicorn
 import docker
-from fastapi import Body, FastAPI, Request
+from fastapi import Body, FastAPI, HTTPException, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from logging.config import dictConfig
@@ -100,7 +100,7 @@ async def deploy_new_container(
 
     except Exception as e:
         log.error(f'Error while deploing container {container_name} {e}')
-        return JSONResponse(jsonable_encoder(e))
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 def main():

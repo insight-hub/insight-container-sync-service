@@ -100,7 +100,10 @@ async def deploy_new_container(
 
     except Exception as e:
         log.error(f'Error while deploing container {container_name} {e}')
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(
+            status_code=400,
+            detail=f"error while deploing contaier {container_name}"
+        )
 
 
 def main():
